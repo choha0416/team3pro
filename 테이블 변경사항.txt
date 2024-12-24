@@ -1,0 +1,173 @@
+--주문
+create table t_shopping_order(
+order_seq_num number(20) primary key,
+order_id number(20),
+member_id varchar2(20),
+goods_id number(20),
+orderer_name varchar2(50),
+goods_title varchar2(50),
+order_goods_qty number(5),
+goods_sales_price number(5),
+order_total_price number(10),
+final_total_price number(10),
+goods_qty number(5),
+orderer_hp varchar2(50),
+goods_fileName varchar2(50),
+receiver_name varchar2(50),
+receiver_hp1 varchar2(50),
+receiver_hp2 varchar2(50),
+receiver_hp3 varchar2(50),
+receiver_tel1 varchar2(50),
+receiver_tel2 varchar2(50),
+receiver_tel3 varchar2(50),
+delivery_address varchar2(500),
+delivery_method varchar2(40),
+delivery_message clob,
+gift_wrapping varchar2(50),
+pay_method varchar2(500),
+card_com_name varchar2(50),
+card_pay_month varchar2(20),
+pay_orderer_hp_num varchar2(20),
+delivery_state varchar2(20),
+pay_order_time date
+);
+ALTER TABLE t_shopping_order MODIFY pay_order_time DATE DEFAULT SYSDATE;
+ALTER TABLE t_shopping_order MODIFY delivery_state VARCHAR2(255) DEFAULT 'delivery_prepared';
+
+select * from t_shopping_order;    
+    
+    --상품
+create table t_shopping_goods(
+goods_id number(20) primary key,
+goods_sort varchar2(50),
+goods_title varchar2(100),
+goods_writer varchar2(50),
+goods_publisher varchar2(50),
+goods_price number(10),
+goods_sales_price number(10),
+goods_point number(10),
+goods_published_date date,
+goods_total_page number(5),
+goods_isbn varchar2(50),
+goods_delivery_price number(5),
+goods_recommendation VARCHAR2(255),
+goods_delivery_date date,
+goods_status varchar(50),
+goods_intro varchar2(2000),
+goods_writer_intro varchar2(2000),
+goods_publisher_comment varchar2(2000),
+goods_contents_order CLOB,
+goods_credate date
+);
+
+
+ALTER TABLE t_shopping_goods MODIFY goods_credate DATE DEFAULT SYSDATE;
+ALTER TABLE t_shopping_goods ADD goods_recommendation VARCHAR2(255);
+ALTER TABLE t_shopping_goods RENAME COLUMN good_sort TO goods_sort;
+
+
+select * from t_shopping_goods;
+select * from t_goods_detail_image;
+
+
+
+COMMIT;
+
+
+
+
+
+--상품 이미지
+create table t_goods_detail_image(
+image_id number(20) primary key,
+goods_id number(20),
+fileName varchar2(50),
+reg_id varchar2(20),
+fileType varchar2(40),
+credate date,
+constraint good_id_fk foreign key(goods_id) REFERENCES t_shopping_goods(goods_id)
+);
+
+
+
+
+
+select * from t_shopping_goods;
+select * from t_goods_detail_image;
+--회원
+create table t_shopping_member(
+member_id varchar2(20) primary key,
+member_pw varchar2(20),
+member_name varchar2(50),
+member_gender varchar2(10),
+tel1 varchar2(20),
+tel2 varchar2(20),
+tel3 varchar2(20),
+hp1 varchar2(20),
+hp2 varchar2(20),
+hp3 varchar2(20),
+smssts_yn varchar2(20),
+email1 varchar2(20),
+email2 varchar2(20),
+emailsts_yn varchar2(20),
+zipcode varchar2(20),
+roadAddress varchar2(500),
+jibunAddress varchar2(500),
+namujiAddress varchar2(500),
+member_birth_y varchar2(20),
+member_birth_m varchar2(20),
+member_birth_d varchar2(20),
+member_birth_gn varchar2(20),
+joinDate varchar2(20),
+del_yn varchar2(20)
+);
+ALTER TABLE t_shopping_member MODIFY del_yn varchar2(20) DEFAULT 'N';
+ALTER TABLE t_shopping_member MODIFY joinDate DATE DEFAULT SYSDATE;
+ALTER TABLE t_shopping_member RENAME COLUMN te1 TO tel1;
+
+
+select * from t_shopping_member;
+--카트
+create table t_shopping_cart(
+cart_id number primary key,
+goods_id number(20),
+member_id varchar2(20),
+cart_goods_qty number,
+creDate date
+);
+
+
+
+select * from t_shopping_cart;
+
+
+CREATE SEQUENCE SEQ_GOODS_ID START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE SEQ_IMAGE_ID START WITH 1 INCREMENT BY 1;
+
+
+CREATE SEQUENCE SEQ_ORDER_ID START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE ORDER_SEQ_NUM START WITH 1 INCREMENT BY 1;
+
+
+
+
+
+
+
+
+
+
+--장바구니 회원정보 회원아이디 참조
+alter table t_shopping_cart add constraint cart_member_id_fky foreign key(member_id) references t_shopping_member(member_id);
+--장바구니 상품번호 상품번호 참조
+alter table t_shopping_cart add constraint cart_goods_id_fky foreign key(goods_id) references t_shopping_goods(goods_id);
+
+--주문 회원정보 아이디 참조
+alter table t_shopping_order add constraint shopping_order_member_id_fky foreign key(member_id) references t_shopping_member(member_id);
+--주문 상품정보 상품번호 참조
+alter table t_shopping_order add constraint shopping_order_goods_id_fky foreign key(goods_id) references t_shopping_goods(goods_id);
+
+
+
+
